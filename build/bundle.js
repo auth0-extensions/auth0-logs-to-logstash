@@ -142,9 +142,8 @@ module.exports =
 	    }, function (context, callback) {
 	      console.log('Uploading blobs...');
 
-	      //TODO - remove this hack - for testing only
-	      // var now = Date.now();
-	      var now = "2016-04-24T15:10:12";
+	      // var now = "2016-04-24T15:10:12";
+	      var now = Date.now();
 
 	      async.eachLimit(context.logs, 5, function (log, cb) {
 	        var date = moment(log.date);
