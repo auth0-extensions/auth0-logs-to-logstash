@@ -45,23 +45,12 @@ module.exports = {
     'auth0-oauth2-express': true,
     'auth0-sandbox-ext': true,
     'detective': true,
-    'sandboxjs': true
+    'sandboxjs': true,
+    'webtask-tools': true
   }),
   plugins: [
     new Webpack.optimize.DedupePlugin(),
-    new Webpack.NoErrorsPlugin(),
-    // new Webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     warnings: false
-    //   }
-    // }),
-    new WebpackOnBuildPlugin(function() {
-      var path   = './build/bundle.js';
-      var bundle = fs.readFileSync(path, 'utf8');
-      // Hack to ensure webtask will be using 2.1.0 and not latest.
-      bundle = bundle.replace(/require\("auth0"\)/ig, 'require("auth0@2.1.0")');
-      fs.writeFileSync(path, bundle);
-    })
+    new Webpack.NoErrorsPlugin()
   ],
   resolve: {
     modulesDirectories: ['node_modules'],
