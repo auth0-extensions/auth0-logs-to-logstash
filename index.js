@@ -58,9 +58,12 @@ function lastLogCheckpoint(req, res) {
               return callback(err);
             }
 
-            if (logs && logs.length) {
+            let batch_size = ctx.data.MAX_BATCH_SIZE || 3000;
+
+            if (logs && logs.length && context.logs.length <= batch_size) {
               logs.forEach((l) => context.logs.push(l));
               context.checkpointId = context.logs[context.logs.length - 1]._id;
+              return setImmediate(() => getLogs(context));
             }
 
             console.log(`Total logs: ${context.logs.length}.`);
@@ -95,10 +98,9 @@ function lastLogCheckpoint(req, res) {
       (context, callback) => {
         console.log('Uploading blobs...');
 
-        // var now = "2016-04-24T15:10:12";
         var now = Date.now();
 
-        async.eachLimit(context.logs, 5, (log, cb) => {
+        async.eachLimit(context.logs, 100, (log, cb) => {
           const date = moment(log.date);
           const url = `${date.format('YYYY/MM/DD')}/${date.format('HH')}/${log._id}.json`;
           console.log(`Uploading ${url}.`);
