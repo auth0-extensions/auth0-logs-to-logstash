@@ -75,7 +75,8 @@ module.exports =
 
 	  // If this is a scheduled task, we'll get the last log checkpoint from the previous run and continue from there.
 	  req.webtaskContext.storage.get(function (err, data) {
-	    var startCheckpointId = typeof data === 'undefined' ? null : data.checkpointId;
+	    var startFromId = ctx.data.START_FROM ? ctx.data.START_FROM : null;
+	    var startCheckpointId = typeof data === 'undefined' ? startFromId : data.checkpointId;
 
 	    /*
 	      this primes the http request with the eventual message
