@@ -107,8 +107,7 @@ module.exports =
 
 	        getLogsFromAuth0(req.webtaskContext.data.AUTH0_DOMAIN, req.access_token, take, context.checkpointId, function (logs, err) {
 	          if (err) {
-	            console.log('Error getting logs from Auth0', err);
-	            return callback(err);
+	            return callback({ error: err, message: 'Error getting logs from Auth0' });
 	          }
 
 	          var batch_size = ctx.data.MAX_BATCH_SIZE || 3000;
@@ -164,14 +163,13 @@ module.exports =
 	        body.message = JSON.stringify(log);
 	        httpRequest(optionsFactory(body), function (error /*, response, body */) {
 	          if (error) {
-	            console.log(error);
 	            return cb(error);
 	          }
 	          return cb();
 	        });
 	      }, function (err) {
 	        if (err) {
-	          return callback(err);
+	          return callback({ error: err, message: 'Error sending logs to Logstash' });
 	        }
 
 	        console.log('Upload complete.');
@@ -179,17 +177,14 @@ module.exports =
 	      });
 	    }], function (err, context) {
 	      if (err) {
-	        console.log('Job failed.');
+	        console.log('Job failed.', err);
 
 	        return req.webtaskContext.storage.set({ checkpointId: startCheckpointId }, { force: 1 }, function (error) {
 	          if (error) {
-	            console.log('Error storing startCheckpoint', error);
-	            return res.status(500).send({ error: error });
+	            return res.status(500).send({ error: error, message: 'Error storing startCheckpoint' });
 	          }
 
-	          res.status(500).send({
-	            error: err
-	          });
+	          res.status(500).send(err);
 	        });
 	      }
 
@@ -200,8 +195,7 @@ module.exports =
 	        totalLogsProcessed: context.logs.length
 	      }, { force: 1 }, function (error) {
 	        if (error) {
-	          console.log('Error storing checkpoint', error);
-	          return res.status(500).send({ error: error });
+	          return res.status(500).send({ error: error, message: 'Error storing checkpoint' });
 	        }
 
 	        res.sendStatus(200);
@@ -919,7 +913,7 @@ module.exports =
 /* 12 */
 /***/ function(module, exports) {
 
-	module.exports = require("lodash");
+	module.exports = require('lodash');
 
 /***/ }
 /******/ ]);

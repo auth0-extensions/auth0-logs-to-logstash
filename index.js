@@ -55,8 +55,7 @@ function lastLogCheckpoint(req, res) {
 
           getLogsFromAuth0(req.webtaskContext.data.AUTH0_DOMAIN, req.access_token, take, context.checkpointId, (logs, err) => {
             if (err) {
-              console.log('Error getting logs from Auth0', err);
-              return callback(err);
+              return callback({ error: err, message: 'Error getting logs from Auth0' });
             }
 
             let batch_size = ctx.data.MAX_BATCH_SIZE || 3000;
@@ -111,14 +110,13 @@ function lastLogCheckpoint(req, res) {
           body.message = JSON.stringify(log);
           httpRequest(optionsFactory(body), function (error /*, response, body */) {
             if (error) {
-              console.log(error);
               return cb(error);
             }
             return cb();
           });
         }, (err) => {
           if (err) {
-            return callback(err);
+            return callback({ error: err, message: 'Error sending logs to Logstash' });
           }
 
           console.log('Upload complete.');
@@ -127,17 +125,14 @@ function lastLogCheckpoint(req, res) {
       }
     ], function (err, context) {
       if (err) {
-        console.log('Job failed.');
+        console.log('Job failed.', err);
 
         return req.webtaskContext.storage.set({ checkpointId: startCheckpointId }, { force: 1 }, (error) => {
           if (error) {
-            console.log('Error storing startCheckpoint', error);
-            return res.status(500).send({error: error});
+            return res.status(500).send({ error: error, message: 'Error storing startCheckpoint' });
           }
 
-          res.status(500).send({
-            error: err
-          });
+          res.status(500).send(err);
         });
       }
 
@@ -148,8 +143,7 @@ function lastLogCheckpoint(req, res) {
         totalLogsProcessed: context.logs.length
       }, { force: 1 }, (error) => {
         if (error) {
-          console.log('Error storing checkpoint', error);
-          return res.status(500).send({error: error});
+          return res.status(500).send({error: error, message: 'Error storing checkpoint' });
         }
 
         res.sendStatus(200);
