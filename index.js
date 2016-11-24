@@ -29,7 +29,8 @@ function lastLogCheckpoint(req, res) {
       and necessary HTTP info
      */
     var optionsFactory = function (body) {
-      return {
+      var opts =
+      {
         method: 'POST',
         url: ctx.data.LOGSTASH_URL,
         headers:
@@ -39,6 +40,14 @@ function lastLogCheckpoint(req, res) {
         body: body,
         json: true
       };
+      if(ctx.data.HTTP_USER && ctx.data.HTTP_PASSWORD){
+        opts['auth'] = {
+          user: ctx.data.HTTP_USER,
+          pass: ctx.data.HTTP_PASSWORD,
+          sendImmediately: true
+        }
+      }
+      return opts;
     };
 
     // Start the process.
