@@ -459,6 +459,11 @@ module.exports =
 	app.get('/', lastLogCheckpoint);
 	app.post('/', lastLogCheckpoint);
 
+	// This endpoint would be called by webtask-gallery when the extension is installed as custom-extension
+	app.get('/meta', function (req, res) {
+	  res.status(200).send(metadata);
+	});
+
 	module.exports = Webtask.fromExpress(app);
 
 /***/ }),
