@@ -58,12 +58,9 @@ function lastLogCheckpoint(req, res) {
               return callback({ error: err, message: 'Error getting logs from Auth0' });
             }
 
-            let batch_size = ctx.data.MAX_BATCH_SIZE || 3000;
-
-            if (logs && logs.length && context.logs.length <= batch_size) {
+            if (logs && logs.length) {
               logs.forEach((l) => context.logs.push(l));
               context.checkpointId = context.logs[context.logs.length - 1]._id;
-              return setImmediate(() => getLogs(context));
             }
 
             console.log(`Total logs: ${context.logs.length}.`);
