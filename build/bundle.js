@@ -152,7 +152,6 @@ module.exports =
 	      async.eachLimit(context.logs, 100, function (log, cb) {
 	        var date = moment(log.date);
 	        var url = date.format('YYYY/MM/DD') + '/' + date.format('HH') + '/' + log._id + '.json';
-	        console.log('Uploading ' + url + '.');
 	        var body = {};
 	        body.post_date = now;
 	        body[ctx.data.LOGSTASH_INDEX] = log[ctx.data.LOGSTASH_INDEX] || 'auth0';

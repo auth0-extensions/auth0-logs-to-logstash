@@ -100,7 +100,6 @@ function lastLogCheckpoint(req, res) {
         async.eachLimit(context.logs, 100, (log, cb) => {
           const date = moment(log.date);
           const url = `${date.format('YYYY/MM/DD')}/${date.format('HH')}/${log._id}.json`;
-          console.log(`Uploading ${url}.`);
           var body = {};
           body.post_date = now;
           body[ctx.data.LOGSTASH_INDEX] = log[ctx.data.LOGSTASH_INDEX] || 'auth0';
