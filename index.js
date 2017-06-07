@@ -8,7 +8,7 @@ const app = express();
 const Request = require('request');
 const memoizer = require('lru-memoizer');
 const httpRequest = require('request');
-
+const metadata = require('./webtask.json');
 
 function lastLogCheckpoint(req, res) {
   let ctx = req.webtaskContext;
@@ -58,12 +58,9 @@ function lastLogCheckpoint(req, res) {
               return callback({ error: err, message: 'Error getting logs from Auth0' });
             }
 
-            let batch_size = ctx.data.MAX_BATCH_SIZE || 3000;
-
-            if (logs && logs.length && context.logs.length <= batch_size) {
+            if (logs && logs.length) {
               logs.forEach((l) => context.logs.push(l));
               context.checkpointId = context.logs[context.logs.length - 1]._id;
-              return setImmediate(() => getLogs(context));
             }
 
             console.log(`Total logs: ${context.logs.length}.`);
@@ -103,7 +100,6 @@ function lastLogCheckpoint(req, res) {
         async.eachLimit(context.logs, 100, (log, cb) => {
           const date = moment(log.date);
           const url = `${date.format('YYYY/MM/DD')}/${date.format('HH')}/${log._id}.json`;
-          console.log(`Uploading ${url}.`);
           var body = {};
           body.post_date = now;
           body[ctx.data.LOGSTASH_INDEX] = log[ctx.data.LOGSTASH_INDEX] || 'auth0';
@@ -417,5 +413,10 @@ app.use(function (req, res, next) {
 
 app.get('/', lastLogCheckpoint);
 app.post('/', lastLogCheckpoint);
+
+// This endpoint would be called by webtask-gallery when the extension is installed as custom-extension
+app.get('/meta', (req, res) => {
+  res.status(200).send(metadata);
+});
 
 module.exports = Webtask.fromExpress(app);
