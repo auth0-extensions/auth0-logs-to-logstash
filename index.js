@@ -8,7 +8,7 @@ const app = express();
 const Request = require('request');
 const memoizer = require('lru-memoizer');
 const httpRequest = require('request');
-
+const metadata = require('./webtask.json');
 
 function lastLogCheckpoint(req, res) {
   let ctx = req.webtaskContext;
