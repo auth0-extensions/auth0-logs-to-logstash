@@ -5,6 +5,7 @@
   "author": "auth0",
   "description": "This extension will take all of your Auth0 logs and export them to Logstash",
   "type": "cron",
+  "initialUrlPath": "/login",
   "repository": "https://github.com/auth0/auth0-logs-to-logstash",
   "keywords": [
     "auth0",
@@ -12,7 +13,9 @@
   ],
   "schedule": "0 */5 * * * *",
   "auth0": {
-    "scopes": "read:logs"
+    "createClient": true,
+    "onUninstallPath": "/.extensions/on-uninstall",
+    "scopes": "read:logs delete:clients"
   },
   "secrets": {
     "BATCH_SIZE": {
@@ -26,6 +29,38 @@
     "LOGSTASH_INDEX": {
       "description": "Logstash Index (as defined in logstash setup",
       "required": true
+    },
+    "LOGSTASH_TOKEN": {
+      "description": "Logstash Token (optional)",
+      "type": "password"
+    },
+    "LOGSTASH_USER": {
+      "description": "Logstash User (optional)"
+    },
+    "LOGSTASH_PASSWORD": {
+      "description": "Logstash Password (optional)",
+      "type": "password"
+    },
+    "START_FROM": {
+      "description": "CheckpointId of log to start with."
+    },
+    "SLACK_INCOMING_WEBHOOK_URL": {
+      "description": "Slack webhook"
+    },
+    "SLACK_SEND_SUCCESS": {
+      "description": "Send success messages to slack?",
+      "type": "select",
+      "allowMultiple": true,
+      "options": [
+        {
+          "value": "No",
+          "text": ""
+        },
+        {
+          "value": "Yes",
+          "text": "true"
+        }
+      ]
     },
     "LOG_LEVEL": {
       "description": "This allows you to specify the log level of events that need to be sent",
