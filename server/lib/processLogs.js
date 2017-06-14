@@ -20,6 +20,7 @@ module.exports = (storage) =>
       const url = config('LOGSTASH_TOKEN') ? `${config('LOGSTASH_URL')}?token=${config('LOGSTASH_TOKEN')}` : config('LOGSTASH_URL');
       const options = {
         method: 'POST',
+        timeout: 20000,
         url: url,
         headers: { 'cache-control': 'no-cache', 'content-type': 'application/json' },
         body: body,
@@ -54,14 +55,7 @@ module.exports = (storage) =>
         data.message = JSON.stringify(log);
 
         sendLog(data, err => cb(err));
-      }, (err) => {
-        if (err) {
-          return callback({ error: err, message: 'Error sending logs to Logstash' });
-        }
-
-        logger.info('Upload complete.');
-        return callback(null, context);
-      });
+      }, callback);
     };
 
     const slack = new loggingTools.reporters.SlackReporter({ hook: config('SLACK_INCOMING_WEBHOOK_URL'), username: 'auth0-logs-to-logstash', title: 'Logs To Logstash' });

@@ -25,6 +25,9 @@ module.exports = (configProvider, storageProvider) => {
     stream: logger.stream
   }));
 
+  app.use('/meta', meta());
+  app.use('/.extensions', hooks());
+
   app.use(processLogs(storage));
 
   app.use(bodyParser.json());
@@ -42,8 +45,6 @@ module.exports = (configProvider, storageProvider) => {
     sessionStorageKey: 'logs-to-logstash:apiToken',
     scopes: 'read:logs'
   }));
-  app.use('/meta', meta());
-  app.use('/.extensions', hooks());
 
   app.use('/app', Express.static(path.join(__dirname, '../dist')));
   app.use('/', routes(storage));
