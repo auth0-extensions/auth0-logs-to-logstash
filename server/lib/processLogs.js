@@ -35,7 +35,10 @@ module.exports = (storage) =>
         }
       }
 
-      request(options, callback);
+      request(options, (err, resp, body) => {
+        const error = err || (body && body.error) || null;
+        callback(error);
+      });
     };
 
     const onLogsReceived = (logs, callback) => {
@@ -54,7 +57,7 @@ module.exports = (storage) =>
         data[index] = log[index] || 'auth0';
         data.message = JSON.stringify(log);
 
-        sendLog(data, err => cb(err));
+        sendLog(data, cb);
       }, callback);
     };
 
