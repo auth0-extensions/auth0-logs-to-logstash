@@ -25,7 +25,6 @@ gulp.task('run', () => {
       ignore: [
         path.join(__dirname, '../assets/app/'),
         path.join(__dirname, '../server/data.json'),
-        path.join(__dirname, '../server/config.json'),
         path.join(__dirname, '../build/'),
         path.join(__dirname, '../client/'),
         path.join(__dirname, '../tests/'),

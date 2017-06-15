@@ -1,6 +1,7 @@
 const async = require('async');
 const request = require('request');
 const moment = require('moment');
+const url = require('url');
 const loggingTools = require('auth0-log-extension-tools');
 
 const config = require('../lib/config');
@@ -17,6 +18,12 @@ module.exports = (storage) =>
     }
 
     const now = Date.now();
+    let logstashUrl = config('LOGSTASH_URL');
+
+    if (config('LOGSTASH_TOKEN')) {
+      const parsedUrl = url.parse(logstashUrl);
+      logstashUrl = (parsedUrl.query) ? `${logstashUrl}&token=${config('LOGSTASH_TOKEN')}` : `${logstashUrl}?token=${config('LOGSTASH_TOKEN')}`;
+    }
 
     const sendLog = function (log, callback) {
       if (!log) {
@@ -36,11 +43,10 @@ module.exports = (storage) =>
       data[index] = log[index] || 'auth0';
       data.message = JSON.stringify(log);
 
-      const url = config('LOGSTASH_TOKEN') ? `${config('LOGSTASH_URL')}?token=${config('LOGSTASH_TOKEN')}` : config('LOGSTASH_URL');
       const options = {
         method: 'POST',
         timeout: 20000,
-        url: url,
+        url: logstashUrl,
         headers: { 'cache-control': 'no-cache', 'content-type': 'application/json' },
         body: data,
         json: true
@@ -87,7 +93,9 @@ module.exports = (storage) =>
     return auth0logger
       .run(onLogsReceived)
       .then(result => {
-        slack.send(result.status, result.checkpoint);
+        if (config('SLACK_SEND_SUCCESS') === true || config('SLACK_SEND_SUCCESS') === 'true') {
+          slack.send(result.status, result.checkpoint);
+        }
         res.json(result);
       })
       .catch(err => {
