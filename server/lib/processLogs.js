@@ -16,14 +16,28 @@ module.exports = (storage) =>
       return next();
     }
 
-    const sendLog = function (body, callback) {
+    const now = Date.now();
+
+    const sendLog = function (log, callback) {
+      const index = config('LOGSTASH_INDEX');
+      const data = {
+        post_date: now
+      };
+
+      Object.keys(log).forEach((key) => {
+        data[key] = log[key];
+      });
+
+      data[index] = log[index] || 'auth0';
+      data.message = JSON.stringify(log);
+
       const url = config('LOGSTASH_TOKEN') ? `${config('LOGSTASH_URL')}?token=${config('LOGSTASH_TOKEN')}` : config('LOGSTASH_URL');
       const options = {
         method: 'POST',
         timeout: 20000,
         url: url,
         headers: { 'cache-control': 'no-cache', 'content-type': 'application/json' },
-        body: body,
+        body: data,
         json: true
       };
 
@@ -48,17 +62,7 @@ module.exports = (storage) =>
 
       logger.info(`Sending ${logs.length} logs to Logstash.`);
 
-      const now = Date.now();
-      async.eachLimit(logs, 100, (log, cb) => {
-        const index = config('LOGSTASH_INDEX');
-        const data = {};
-
-        data.post_date = now;
-        data[index] = log[index] || 'auth0';
-        data.message = JSON.stringify(log);
-
-        sendLog(data, cb);
-      }, callback);
+      async.eachLimit(logs, 100, sendLog, callback);
     };
 
     const slack = new loggingTools.reporters.SlackReporter({ hook: config('SLACK_INCOMING_WEBHOOK_URL'), username: 'auth0-logs-to-logstash', title: 'Logs To Logstash' });
