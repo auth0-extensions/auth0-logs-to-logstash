@@ -19,9 +19,14 @@ module.exports = (storage) =>
     const now = Date.now();
 
     const sendLog = function (log, callback) {
+      if (!log) {
+        return callback();
+      }
+
       const index = config('LOGSTASH_INDEX');
       const data = {
-        post_date: now
+        post_date: now,
+        type_description: loggingTools.logTypes.get(log.type)
       };
 
       Object.keys(log).forEach((key) => {
