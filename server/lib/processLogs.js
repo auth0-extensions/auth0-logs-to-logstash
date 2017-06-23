@@ -45,7 +45,7 @@ module.exports = (storage) =>
 
       const options = {
         method: 'POST',
-        timeout: 20000,
+        timeout: 2000,
         url: logstashUrl,
         headers: { 'cache-control': 'no-cache', 'content-type': 'application/json' },
         body: data,
@@ -73,7 +73,7 @@ module.exports = (storage) =>
 
       logger.info(`Sending ${logs.length} logs to Logstash.`);
 
-      async.eachLimit(logs, 100, sendLog, callback);
+      async.eachLimit(logs, 10, sendLog, callback);
     };
 
     const slack = new loggingTools.reporters.SlackReporter({ hook: config('SLACK_INCOMING_WEBHOOK_URL'), username: 'auth0-logs-to-logstash', title: 'Logs To Logstash' });
