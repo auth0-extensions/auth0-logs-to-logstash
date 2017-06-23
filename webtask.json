@@ -1,12 +1,12 @@
 {
   "title": "Auth0 Logs to Logstash",
   "name": "auth0-logs-to-logstash",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "auth0",
-  "description": "This extension will take all of your Auth0 logs and export them to Logstash",
+  "description": "This extension will continuously export your Auth0 logs to Logstash",
   "type": "cron",
   "initialUrlPath": "/login",
-  "repository": "https://github.com/auth0/auth0-logs-to-logstash",
+  "repository": "https://github.com/auth0-extensions/auth0-logs-to-logstash",
   "keywords": [
     "auth0",
     "extension"
@@ -19,11 +19,11 @@
   },
   "secrets": {
     "BATCH_SIZE": {
-      "description": "The amount of logs to be read on each execution. Maximum is 100.",
+      "description": "The amount of logs to batch before sending to Logstash. A single cron execution will send multiple batches.",
       "default": 100
     },
     "LOGSTASH_URL": {
-      "description": "Logstash URL (logstash-input-http)",
+      "description": "Logstash URL (from logstash-input-http)",
       "required": true
     },
     "LOGSTASH_INDEX": {
@@ -45,10 +45,10 @@
       "description": "Checkpoint ID of log to start from."
     },
     "SLACK_INCOMING_WEBHOOK_URL": {
-      "description": "Slack Incoming Webhook URL used to report statistics"
+      "description": "Slack Incoming Webhook URL used to report statistics and possible failures"
     },
     "SLACK_SEND_SUCCESS": {
-      "description": "If disabled, only failed runs and daily reports will be reported to Slack",
+      "description": "This setting will enable verbose notifications to Slack which are useful for troubleshooting",
       "type": "select",
       "allowMultiple": false,
       "default": "false",
