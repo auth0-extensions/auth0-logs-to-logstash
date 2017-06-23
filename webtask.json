@@ -7,6 +7,8 @@
   "type": "cron",
   "initialUrlPath": "/login",
   "repository": "https://github.com/auth0-extensions/auth0-logs-to-logstash",
+  "docsUrl": "https://auth0.com/docs/extensions/logstash",
+  "logoUrl": "https://cdn.auth0.com/extensions/auth0-logs-to-logstash/assets/logo.png",
   "keywords": [
     "auth0",
     "extension"
