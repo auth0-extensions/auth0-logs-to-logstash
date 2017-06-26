@@ -52,8 +52,7 @@ module.exports = (configProvider, storageProvider) => {
     baseUrl: config('PUBLIC_WT_URL') || config('WT_URL'),
     clientName: 'Logs to Logstash',
     urlPrefix: '',
-    sessionStorageKey: 'logs-to-logstash:apiToken',
-    scopes: 'read:logs'
+    sessionStorageKey: 'logs-to-logstash:apiToken'
   }));
 
   app.use('/app', Express.static(path.join(__dirname, '../dist')));
