@@ -44,17 +44,6 @@ module.exports = (configProvider, storageProvider) => {
   app.use(processLogs(storage));
 
   // Configure routes.
-  app.use(expressTools.routes.dashboardAdmins({
-    secret: config('EXTENSION_SECRET'),
-    audience: 'urn:logs-to-logstash',
-    rta: config('AUTH0_RTA').replace('https://', ''),
-    domain: config('AUTH0_DOMAIN'),
-    baseUrl: config('PUBLIC_WT_URL') || config('WT_URL'),
-    clientName: 'Logs to Logstash',
-    urlPrefix: '',
-    sessionStorageKey: 'logs-to-logstash:apiToken'
-  }));
-
   app.use('/app', Express.static(path.join(__dirname, '../dist')));
   app.use('/', routes(storage));
 
