@@ -279,9 +279,9 @@ auth0-api-jwt-rsa-validation@0.0.1:
     lru-cache "^3.2.0"
     request "^2.67.0"
 
-auth0-extension-express-tools@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/auth0-extension-express-tools/-/auth0-extension-express-tools-1.1.0.tgz#ad4614ba9fb0e7840d07b17256b59bba9e2d3ffb"
+auth0-extension-express-tools@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/auth0-extension-express-tools/-/auth0-extension-express-tools-1.1.3.tgz#9a48affff68abf4441cc688378dd1b088f2b6f1e"
   dependencies:
     auth0-extension-tools "^1.0.0"
     cookie-parser "^1.4.3"
@@ -344,9 +344,9 @@ auth0-extensions-cli@^1.0.5:
     request-promise "^4.2.0"
     webpack "^2.3.2"
 
-"auth0-log-extension-tools@git+https://github.com/auth0-extensions/auth0-log-extension-tools":
-  version "1.2.1"
-  resolved "git+https://github.com/auth0-extensions/auth0-log-extension-tools#2059560f7c5ed25b8a1258fbf8436426719bd033"
+auth0-log-extension-tools@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/auth0-log-extension-tools/-/auth0-log-extension-tools-1.2.2.tgz#ac5383c39a2b9863b3b831c478513beece507dcf"
   dependencies:
     auth0-extension-tools "^1.2.1"
     bluebird "3.4.6"
