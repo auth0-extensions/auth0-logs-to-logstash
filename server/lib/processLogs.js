@@ -7,7 +7,7 @@ const loggingTools = require('auth0-log-extension-tools');
 const config = require('../lib/config');
 const logger = require('../lib/logger');
 
-module.exports = (storage) =>
+module.exports = storage =>
   (req, res, next) => {
     const wtBody = (req.webtaskContext && req.webtaskContext.body) || req.body || {};
     const wtHead = (req.webtaskContext && req.webtaskContext.headers) || {};
@@ -25,7 +25,7 @@ module.exports = (storage) =>
       logstashUrl = (parsedUrl.query) ? `${logstashUrl}&token=${config('LOGSTASH_TOKEN')}` : `${logstashUrl}?token=${config('LOGSTASH_TOKEN')}`;
     }
 
-    const sendLog = function (log, callback) {
+    const sendLog = (log, callback) => {
       if (!log) {
         return callback();
       }
@@ -53,14 +53,14 @@ module.exports = (storage) =>
       };
 
       if (config('LOGSTASH_USER') && config('LOGSTASH_PASSWORD')) {
-        options['auth'] = {
+        options.auth = {
           user: config('LOGSTASH_USER'),
           pass: config('LOGSTASH_PASSWORD'),
           sendImmediately: true
-        }
+        };
       }
 
-      request(options, (err, resp, body) => {
+      return request(options, (err, resp, body) => {
         const error = err || (body && body.error) || null;
         callback(error);
       });
@@ -73,7 +73,7 @@ module.exports = (storage) =>
 
       logger.info(`Sending ${logs.length} logs to Logstash.`);
 
-      async.eachLimit(logs, 10, sendLog, callback);
+      return async.eachLimit(logs, 10, sendLog, callback);
     };
 
     const slack = new loggingTools.reporters.SlackReporter({ hook: config('SLACK_INCOMING_WEBHOOK_URL'), username: 'auth0-logs-to-logstash', title: 'Logs To Logstash' });
@@ -111,18 +111,18 @@ module.exports = (storage) =>
     const checkReportTime = () => {
       storage.read()
         .then((data) => {
-          const now = moment().format('DD-MM-YYYY');
+          const currentDate = moment().format('DD-MM-YYYY');
           const reportTime = config('DAILY_REPORT_TIME') || 16;
 
-          if (data.lastReportDate !== now && new Date().getHours() >= reportTime) {
-            sendDailyReport(now);
+          if (data.lastReportDate !== currentDate && new Date().getHours() >= reportTime) {
+            sendDailyReport(currentDate);
           }
-        })
+        });
     };
 
     return auth0logger
       .run(onLogsReceived)
-      .then(result => {
+      .then((result) => {
         if (result && result.status && result.status.error) {
           slack.send(result.status, result.checkpoint);
         } else if (config('SLACK_SEND_SUCCESS') === true || config('SLACK_SEND_SUCCESS') === 'true') {
@@ -131,7 +131,7 @@ module.exports = (storage) =>
         checkReportTime();
         res.json(result);
       })
-      .catch(err => {
+      .catch((err) => {
         slack.send({ error: err, logsProcessed: 0 }, null);
         checkReportTime();
         next(err);

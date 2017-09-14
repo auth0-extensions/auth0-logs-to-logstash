@@ -1,3 +1,4 @@
+/* global window, localStorage, sessionStorage */
 import axios from 'axios';
 import { isTokenExpired, decodeToken } from '../utils/auth';
 
@@ -44,8 +45,6 @@ export function loadCredentials() {
           user: decodedToken
         }
       });
-
-      return;
     }
   };
 }
