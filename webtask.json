@@ -27,6 +27,7 @@
     },
     "LOGSTASH_URL": {
       "description": "Logstash URL (from logstash-input-http)",
+      "example": "https://listener.logz.io:8071",
       "required": true
     },
     "LOGSTASH_INDEX": {
