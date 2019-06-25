@@ -104,7 +104,11 @@ module.exports = (storage) =>
       const end = current.getTime();
       const start = end - 86400000;
       auth0logger.getReport(start, end)
-        .then(report => slack.send(report, report.checkpoint))
+        .then(report => {
+          if (config('SLACK_SEND_REPORT') === true || config('SLACK_SEND_REPORT') === 'true') {
+            slack.send(report, report.checkpoint)
+          }
+        })
         .then(() => storage.read())
         .then((data) => {
           data.lastReportDate = lastReportDate;

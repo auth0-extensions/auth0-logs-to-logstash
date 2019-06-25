@@ -68,6 +68,22 @@
         }
       ]
     },
+    "SLACK_SEND_REPORT": {
+      "description": "This setting will enable a daily summary report to slack",
+      "type": "select",
+      "allowMultiple": false,
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "text": "No"
+        },
+        {
+          "value": "true",
+          "text": "Yes"
+        }
+      ]
+    },
     "LOG_LEVEL": {
       "description": "This allows you to specify the log level of events that need to be sent",
       "type": "select",
